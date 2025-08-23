@@ -32,187 +32,162 @@
                     <a href="#menu" class="nav-link">Меню</a>
                     <a href="#about" class="nav-link">О нас</a>
                     <a href="#contact" class="nav-link">Контакты</a>
+
+                    {% if role == "cashier" %}
+                        <a href="#orders" class="nav-link">Заказы</a>
+                    {% elif role == "courier" %}
+                        <a href="#delivery" class="nav-link">Доставка</a>
+                    {% elif role == "admin" %}
+                        <a href="#orders" class="nav-link">Заказы</a>
+                        <a href="#delivery" class="nav-link">Доставка</a>
+                        <a href="#manage" class="nav-link">Управление</a>
+                    {% endif %}
                 </nav>
 
                 <div class="header-actions">
-                    <div class="phone">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                        </svg>
-                        <span>(555) 123-WRAP</span>
+                    {% if user.is_authenticated %}
+                    <div class="user-box">
+                        <span class="user-name">
+                            {{ user.get_full_name|default:user.username }}
+                        </span>
+                        {% if user.profile %}
+                        <span class="role-badge">{{ user.profile.get_role_display }}</span>
+                            {% endif %}
+                            <a href="{% url 'logout' %}" class="btn btn-secondary">Выйти</a>
                     </div>
-                    <button class="btn btn-primary order-btn">
-                        🔥 Заказать Сейчас
-                    </button>
-                    <div id="user-info">
-                    </div>
+                    {% else %}
+                    <button id="loginBtn" class="btn btn-primary">Войти</button>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </header>
 
-        <!-- Модалка входа -->
-    <div id="login-modal" class="modal hidden">
-        <div class="modal-content">
-        <h2>Вход</h2>
-        <input type="text" id="login-email" placeholder="Email">
-        <input type="password" id="login-password" placeholder="Пароль">
-        <button id="login-btn">Войти</button>
-        <p>Нет аккаунта? <a href="#" id="show-register">Создать</a></p>
-        </div>
+        <!-- AUTH MODAL -->
+<div id="authModal" class="modal hidden">
+  <div class="modal__backdrop"></div>
+  <div class="modal__dialog">
+    <button id="closeAuthModal" class="modal__close" aria-label="Закрыть">×</button>
+
+    <div class="tabs">
+      <button class="tabs__btn tabs__btn--active" data-tab="login">Вход</button>
+      <button class="tabs__btn" data-tab="register">Регистрация</button>
     </div>
 
-    <!-- Модалка регистрации -->
-    <div id="register-modal" class="modal hidden">
-        <div class="modal-content">
-        <h2>Регистрация</h2>
-        <input type="text" id="reg-name" placeholder="ФИО">
-        <input type="text" id="reg-email" placeholder="Email">
-        <input type="password" id="reg-password" placeholder="Пароль">
-        <button id="register-btn">Создать аккаунт</button>
-        <p>Уже есть аккаунт? <a href="#" id="show-login">Войти</a></p>
-        </div>
+    <div class="tabs__content">
+      <!-- ВХОД -->
+      <form id="loginForm" class="form" method="post" action="{% url 'login' %}" data-tab-panel="login">
+        {% csrf_token %}
+        <label>Email
+          <input type="email" name="email" required>
+        </label>
+        <label>Пароль
+          <input type="password" name="password" required minlength="6">
+        </label>
+        <button type="submit" class="btn btn-primary btn-block">Войти</button>
+
+        <a href="{% url 'social:begin' 'google-oauth2' %}" class="google-btn">
+              Войти через Google
+        </a>
+
+        <p class="hint">
+          Нет аккаунта? <a href="#" class="link-switch" data-target="register">Зарегистрироваться</a>
+        </p>
+      </form>
+
+      <!-- РЕГИСТРАЦИЯ -->
+      <form id="registerForm" class="form hidden" method="post" action="{% url 'register' %}" data-tab-panel="register">
+        {% csrf_token %}
+        <label>Имя
+          <input type="text" name="name" required>
+        </label>
+        <label>Телефон
+          <input type="text" name="phone">
+        </label>
+        <label>Email
+          <input type="email" name="email" required>
+        </label>
+        <label>Адрес
+          <input type="text" name="address">
+        </label>
+        <label>Пароль
+          <input type="password" name="password" required minlength="6">
+        </label>
+        <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
+
+        <a class="btn btn-google btn-block"
+           href="{% url 'social:begin' 'google-oauth2' %}?next={% url 'index' %}">
+          Зарегистрироваться через Google
+        </a>
+
+        <p class="hint">
+          Уже есть аккаунт? <a href="#" class="link-switch" data-target="login">Войти</a>
+        </p>
+      </form>
     </div>
+  </div>
+</div>
 
     <!-- Offers Section - Carousel -->
     <section id="offers" class="offers-section">
-        <div class="offers-carousel">
-            <div class="carousel-container">
-                <div class="carousel-slide active" data-slide="0">
-                    <div class="offer-content">
-                        <div class="offer-image">
-                            <img src="https://images.unsplash.com/photo-1693200436775-79c0f8a11d37?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGVjaWFsJTIwb2ZmZXIlMjBwcm9tb3Rpb24lMjBmb29kfGVufDF8fHx8MTc1NTY3NDY5OXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Mega Sale">
-                        </div>
-                        <div class="offer-text">
-                            <div class="offer-badge">🔥 МЕГА СКИДКА</div>
-                            <h2>50% скидка на первый заказ!</h2>
-                            <p>Влюбитесь в наш вкус с первого кусочка! Специальное предложение для новых клиентов - целых 50% скидки!</p>
-                            <div class="offer-details">
-                                <span class="offer-code">Промокод: LOVE50</span>
-                                <span class="offer-time">⏰ До конца недели</span>
-                            </div>
-                            <button class="btn btn-offer">💕 Влюбиться в этот вкус!</button>
-                        </div>
+    <h2>🔥 Акции</h2>
+    <div class="offers-carousel">
+        <div class="carousel-container">
+            {% for offer in offers %}
+            <div class="carousel-slide {% if forloop.first %}active{% endif %}" data-slide="{{ forloop.counter0 }}">
+                <div class="offer-content">
+                    <div class="offer-image">
+                        {% if offer.image %}
+                            <img src="{{ offer.image.url }}" alt="{{ offer.title }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/600x400?text=Нет+фото" alt="Нет фото">
+                        {% endif %}
                     </div>
-                </div>
-
-                <div class="carousel-slide" data-slide="1">
-                    <div class="offer-content">
-                        <div class="offer-image">
-                            <img src="https://images.unsplash.com/photo-1736865265965-f8c9c082ca85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaGF3YXJtYSUyMGRpc2NvdW50JTIwYmFubmVyfGVufDF8fHx8MTc1NTY3NDcwM3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Combo Deal">
+                    <div class="offer-text">
+                        <div class="offer-badge">🎉 СКИДКА {{ offer.discount_percent }}%</div>
+                        <h3>{{ offer.title }}</h3>
+                        <p>{{ offer.description }}</p>
+                        <div class="offer-details">
+                            {% if offer.promo_code %}
+                                <span class="offer-code">Промокод: {{ offer.promo_code }}</span>
+                            {% endif %}
+                            {% if offer.valid_until %}
+                                <span class="offer-time">⏰ До {{ offer.valid_until|date:"d.m.Y" }}</span>
+                            {% endif %}
                         </div>
-                        <div class="offer-text">
-                            <div class="offer-badge">🌟 КОМБО СДЕЛКА</div>
-                            <h2>2 шаурмы + напитки = 1990₽</h2>
-                            <p>Идеально для компании! Две наши лучшие шаурмы с освежающими напитками по невероятной цене!</p>
-                            <div class="offer-details">
-                                <span class="offer-save">Экономия: 600₽</span>
-                                <span class="offer-time">⏰ Каждый день до 18:00</span>
-                            </div>
-                            <button class="btn btn-offer">🤤 Хочу попробовать прямо сейчас!</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="carousel-slide" data-slide="2">
-                    <div class="offer-content">
-                        <div class="offer-image">
-                            <img src="https://images.unsplash.com/photo-1585493660803-a50c5d20b6b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmb29kJTIwcHJvbW90aW9uJTIwYmFubmVyJTIwcmVkfGVufDF8fHx8MTc1NTY3NDcwOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Free Delivery">
-                        </div>
-                        <div class="offer-text">
-                            <div class="offer-badge">🚚 БЕСПЛАТНО</div>
-                            <h2>Бесплатная доставка при заказе от 1500₽</h2>
-                            <p>Никаких дополнительных трат! Заказывайте от 1500₽ и получайте бесплатную доставку прямо к двери!</p>
-                            <div class="offer-details">
-                                <span class="offer-zone">🗺️ Вся зона доставки</span>
-                                <span class="offer-time">⚡ За 30 минут</span>
-                            </div>
-                            <button class="btn btn-offer">🏃‍♂️ Заказать с доставкой!</button>
-                        </div>
+                        <button class="btn btn-offer">Заказать</button>
                     </div>
                 </div>
             </div>
-
-            <!-- Carousel Navigation -->
-            <button class="carousel-btn carousel-prev" onclick="previousSlide()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="15,18 9,12 15,6"/>
-                </svg>
-            </button>
-            <button class="carousel-btn carousel-next" onclick="nextSlide()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="9,18 15,12 9,6"/>
-                </svg>
-            </button>
-
-            <!-- Carousel Dots -->
-            <div class="carousel-dots">
-                <button class="dot active" onclick="currentSlide(0)"></button>
-                <button class="dot" onclick="currentSlide(1)"></button>
-                <button class="dot" onclick="currentSlide(2)"></button>
-            </div>
+            {% empty %}
+            <p>Нет активных акций</p>
+            {% endfor %}
         </div>
-    </section>
+
+        <!-- Навигация -->
+        <button class="carousel-btn carousel-prev" onclick="previousSlide()">‹</button>
+        <button class="carousel-btn carousel-next" onclick="nextSlide()">›</button>
+
+        <div class="carousel-dots">
+            {% for offer in offers %}
+                <button class="dot {% if forloop.first %}active{% endif %}" onclick="currentSlide({{ forloop.counter0 }})"></button>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 
     <!-- Menu Section -->
-    <section id="menu" class="menu-section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Наше <span class="highlight">Меню</span></h2>
-                <p>Каждое блюдо - это кулинарный шедевр, созданный с любовью и вниманием к деталям</p>
-            </div>
-
-            <div class="menu-grid">
-                <div class="menu-item featured">
-                    <div class="item-badge">🔥 ХИТ ПРОДАЖ</div>
-                    <div class="item-image">
-                        <img src="https://images.unsplash.com/photo-1583060095186-852adde6b819?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZWxpY2lvdXMlMjBzaGF3YXJtYSUyMGNsb3NlJTIwdXAlMjBmb29kJTIwcGhvdG9ncmFwaHl8ZW58MXx8fHwxNzU1NTg0NTU3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Сочная Куриная Шаурма">
-                    </div>
-                    <div class="item-content">
-                        <h3>Сочная Куриная Шаурма</h3>
-                        <p>Невероятно нежное маринованное мясо с хрустящими овощами и нашим фирменным чесночным соусом - это просто взрыв вкуса!</p>
-                        <div class="item-footer">
-                            <span class="price">890₽</span>
-                            <button class="btn btn-cart">🛒 В корзину</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="menu-item">
-                    <div class="item-image">
-                        <img src="https://images.unsplash.com/photo-1583665354191-634609954d54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcHBldGl6aW5nJTIwYmVlZiUyMGtlYmFiJTIwd3JhcHxlbnwxfHx8fDE3NTU1ODQ1NjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Премиум Говяжья Шаурма">
-                    </div>
-                    <div class="item-content">
-                        <h3>Премиум Говяжья Шаурма</h3>
-                        <p>Роскошная говядина премиум-класса с хумусом, табуле и пикантным соусом харисса - настоящий деликатес для истинных гурманов!</p>
-                        <div class="item-footer">
-                            <span class="price">1090₽</span>
-                            <button class="btn btn-cart">🛒 В корзину</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="menu-item">
-                    <div class="item-image">
-                        <img src="https://images.unsplash.com/photo-1662318183333-971ae1658e44?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmVzaCUyMHZlZ2V0YWJsZSUyMGZhbGFmZWwlMjB3cmFwfGVufDF8fHx8MTc1NTU4NDU2MHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" alt="Овощная Средиземноморская Шаурма">
-                    </div>
-                    <div class="item-content">
-                        <h3>Овощная Средиземноморская Шаурма</h3>
-                        <p>Свежайшие овощи, ароматный фалафель, нежный хумус и тахини в теплой лепешке - вегетарианский рай для настоящих ценителей!</p>
-                        <div class="item-footer">
-                            <span class="price">790₽</span>
-                            <button class="btn btn-cart">🛒 В корзину</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="menu-cta">
-                <button class="btn btn-large">📖 Посмотреть полное меню</button>
-                <p>Более 5 видов шаурмы, напитки и закуски!</p>
-            </div>
-        </div>
-    </section>
+        <section id="menu">
+            <h2>Меню</h2>
+                <ul>
+                    {% for item in menu_items %}
+                    <li>{{ item.name }} — {{ item.price }}₸</li>
+                    <p>{{ item.description }}</p>
+                    {% empty %}
+                    <p>Меню пока пустое</p>
+                    {% endfor %}
+                </ul>
+        </section>
 
     <!-- About Section - История создания -->
     <section id="about" class="about-section">
@@ -372,6 +347,21 @@
             </div>
         </div>
     </section>
+    <!-- Administration -->
+    <section id="orders">
+        <h2>Заказы</h2>
+            ...
+        </section>
+
+    <section id="delivery">
+        <h2>Доставка</h2>
+        ...
+    </section>
+
+    <section id="manage">
+        <h2>Управление</h2>
+        ...
+    </section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -442,5 +432,6 @@
     </div>
 
      <script src="{% static 'scripts/script.js' %}"></script>
+     <script src="{% static 'scripts/offers.js' %}"></script>
 </body>
 </html>

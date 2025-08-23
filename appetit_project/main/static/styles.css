@@ -277,170 +277,156 @@ button {
 
 /* Offers Section - Carousel */
 .offers-section {
-    position: relative;
-    height: 100vh;
-    overflow: hidden;
+    padding: 40px 20px;
+    background: #fafafa;
+    text-align: center;
+}
+
+.offers-section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #222;
 }
 
 .offers-carousel {
     position: relative;
-    width: 100%;
-    height: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    background: #fff;
 }
 
 .carousel-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
+    display: flex;
+    transition: transform 0.6s ease-in-out;
 }
 
 .carousel-slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 0.8s ease-in-out;
+    min-width: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
 .carousel-slide.active {
-    opacity: 1;
+    display: flex;
 }
 
 .offer-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    height: 100%;
+    display: flex;
+    gap: 20px;
     align-items: center;
-}
-
-.offer-image {
-    height: 100%;
-    overflow: hidden;
+    justify-content: center;
+    flex-wrap: wrap;
+    text-align: left;
 }
 
 .offer-image img {
-    width: 100%;
-    height: 100%;
+    max-width: 320px;
+    border-radius: 10px;
     object-fit: cover;
 }
 
 .offer-text {
-    padding: 4rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(220,38,38,0.1));
+    max-width: 450px;
 }
 
 .offer-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: linear-gradient(135deg, var(--primary-red), var(--primary-red-hover));
-    color: var(--white);
-    padding: 0.5rem 1rem;
-    border-radius: 9999px;
-    font-weight: 700;
-    font-size: 0.875rem;
-    width: fit-content;
-    animation: pulse 2s infinite;
+    display: inline-block;
+    background: #ff4d4f;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 10px;
 }
 
-.offer-text h2 {
-    font-size: 3rem;
-    font-weight: 800;
-    line-height: 1.2;
-    background: linear-gradient(135deg, var(--white), var(--primary-red));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.offer-text h3 {
+    font-size: 1.5rem;
+    margin: 10px 0;
+    color: #333;
 }
 
 .offer-text p {
-    font-size: 1.25rem;
-    color: var(--gray-300);
-    line-height: 1.6;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #555;
 }
 
 .offer-details {
+    font-size: 14px;
+    margin-bottom: 15px;
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    gap: 15px;
+    flex-wrap: wrap;
+    color: #666;
 }
 
-.offer-code,
-.offer-save,
-.offer-zone {
-    background: rgba(220,38,38,0.1);
-    color: var(--primary-red);
-    padding: 0.5rem 1rem;
-    border-radius: var(--border-radius);
-    font-weight: 600;
-    width: fit-content;
+.btn-offer {
+    background: #ff9800;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.offer-time {
-    color: var(--gray-400);
-    font-size: 0.875rem;
+.btn-offer:hover {
+    background: #e68900;
 }
 
-/* Carousel Navigation */
+/* === Navigation Buttons === */
 .carousel-btn {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(0,0,0,0.7);
-    color: var(--white);
+    background: rgba(0,0,0,0.5);
     border: none;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: #fff;
+    font-size: 20px;
     cursor: pointer;
-    transition: var(--transition);
-    z-index: 10;
+    padding: 10px;
+    border-radius: 50%;
+    transition: 0.3s;
 }
 
 .carousel-btn:hover {
-    background: var(--primary-red);
-    transform: translateY(-50%) scale(1.1);
+    background: rgba(0,0,0,0.8);
 }
 
 .carousel-prev {
-    left: 2rem;
+    left: 15px;
 }
 
 .carousel-next {
-    right: 2rem;
+    right: 15px;
 }
 
+/* === Dots === */
 .carousel-dots {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
     display: flex;
-    gap: 0.75rem;
-    z-index: 10;
+    justify-content: center;
+    margin: 15px 0;
+    gap: 8px;
 }
 
 .dot {
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    background: #ccc;
     border: none;
-    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
     cursor: pointer;
-    transition: var(--transition);
+    transition: background 0.3s;
 }
 
 .dot.active {
-    background: var(--primary-red);
-    transform: scale(1.2);
+    background: #ff9800;
 }
 
 /* Section Headers */
@@ -1080,4 +1066,41 @@ button {
     .offer-text h2 {
         font-size: 1.5rem;
     }
+}
+
+/* === Auth Modal === */
+.modal.hidden { display: none; }
+.modal { position: fixed; inset: 0; z-index: 1000; }
+.modal__backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
+.modal__dialog {
+  position: relative; margin: 6vh auto; width: min(520px, 92vw);
+  background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,.2);
+}
+.modal__close { position: absolute; right: 10px; top: 10px; border: 0; background: transparent; font-size: 24px; cursor: pointer; }
+
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.tabs__btn { padding: 8px 14px; border-radius: 10px; border: 1px solid #eee; background: #f6f6f6; cursor: pointer; }
+.tabs__btn--active { background: #fff; border-color: #ddd; box-shadow: 0 2px 6px rgba(0,0,0,.06); }
+
+.form { display: grid; gap: 12px; }
+.form label { display: grid; gap: 6px; font-weight: 600; }
+.form input { padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; outline: none; }
+.form .btn-block { width: 100%; }
+.btn-google { display: inline-flex; justify-content: center; align-items: center; padding: 10px 12px; border-radius: 10px; background: #fff; border: 1px solid #ddd; }
+.hint { font-size: 14px; color: #666; text-align: center; margin-top: 6px; }
+
+.user-box { display: inline-flex; gap: 10px; align-items: center; }
+.role-badge { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: #f1f1f1; }
+.google-btn {
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #444;
+  font-weight: bold;
+}
+.google-btn:hover {
+  background: #f8f8f8;
 }

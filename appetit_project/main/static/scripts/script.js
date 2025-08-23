@@ -505,6 +505,47 @@ showLoginBtn.onclick = () => {
   loginModal.classList.remove("hidden");
 };
 
+
+document.addEventListener('DOMContentLoaded', function () {
+  const loginBtn = document.getElementById('loginBtn');
+  const modal = document.getElementById('authModal');
+  const closeBtn = document.getElementById('closeAuthModal');
+  const backdrop = modal ? modal.querySelector('.modal__backdrop') : null;
+  const tabsBtns = document.querySelectorAll('.tabs__btn');
+  const linkSwitches = document.querySelectorAll('.link-switch');
+
+  function openModal() {
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  if (loginBtn && modal) loginBtn.addEventListener('click', openModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (backdrop) backdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+  });
+
+  function activateTab(name) {
+    document.querySelectorAll('[data-tab-panel]').forEach(p => {
+      p.classList.toggle('hidden', p.dataset.tabPanel !== name);
+    });
+    tabsBtns.forEach(b => b.classList.toggle('tabs__btn--active', b.dataset.tab === name));
+  }
+
+  tabsBtns.forEach(btn => btn.addEventListener('click', () => activateTab(btn.dataset.tab)));
+  linkSwitches.forEach(a => a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const t = a.dataset.target;
+    if (t) activateTab(t);
+  }));
+});
+
+
 // инициализация
 renderHeader();
 
